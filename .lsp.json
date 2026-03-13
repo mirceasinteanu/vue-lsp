@@ -1,0 +1,21 @@
+{
+  "vue": {
+    "command": "./vue-lsp-run.sh",
+    "args": [],
+    "transport": "stdio",
+    "extensionToLanguage": {
+      ".vue": "vue"
+    },
+    "initializationOptions": {
+      "typescript": {
+        "tsdk": "node_modules/typescript/lib"
+      },
+      "vue": {
+        "hybridMode": false
+      }
+    },
+    "settings": {},
+    "startupTimeout": 90000,
+    "maxRestarts": 3
+  }
+}

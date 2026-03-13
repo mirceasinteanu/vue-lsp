@@ -1,0 +1,9 @@
+{
+  "name": "vue-lsp",
+  "description": "Vue language server (Volar) for code intelligence, diagnostics, and analysis",
+  "version": "1.0.0",
+  "author": { "name": "mircea" },
+  "category": "development",
+  "license": "Apache-2.0",
+  "keywords": ["vue", "volar", "lsp", "language-server"]
+}

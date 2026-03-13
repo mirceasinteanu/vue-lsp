@@ -1,0 +1,13 @@
+{
+  "name": "vue-lsp",
+  "owner": {
+    "name": "mircea"
+  },
+  "plugins": [
+    {
+      "name": "vue-lsp",
+      "source": "./",
+      "description": "Vue language server (Volar) for code intelligence, diagnostics, and analysis"
+    }
+  ]
+}
