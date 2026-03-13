@@ -119,7 +119,9 @@ server.stdout.on('data', (chunk) => {
 
       // Send a tsserver/response back to unblock the server
       if (Array.isArray(msg.params) && Array.isArray(msg.params[0])) {
-        const responses = msg.params.map(([requestId]) => [requestId, null]);
+        const responses = msg.params
+          .filter(arr => Array.isArray(arr) && arr.length > 0)
+          .map(([requestId]) => [requestId, null]);
         const response = JSON.stringify({
           jsonrpc: '2.0',
           method: 'tsserver/response',
