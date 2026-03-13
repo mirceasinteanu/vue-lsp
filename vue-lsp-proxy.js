@@ -42,9 +42,14 @@ server.on('error', (err) => {
   process.exit(1);
 });
 
-server.on('exit', (code) => {
-  log('SERVER', `exited with code ${code}`);
-  process.exit(code || 0);
+server.on('exit', (code, signal) => {
+  log('SERVER', `exited with code ${code}, signal ${signal}`);
+  // Signal-killed: exit with 128 + signal number (POSIX convention)
+  if (signal) {
+    process.kill(process.pid, signal);
+  } else {
+    process.exit(code ?? 0);
+  }
 });
 
 // Forward termination signals to prevent orphaned server processes
