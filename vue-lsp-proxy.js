@@ -38,6 +38,14 @@ server.on('exit', (code) => {
   process.exit(code || 0);
 });
 
+// Forward termination signals to prevent orphaned server processes
+for (const sig of ['SIGTERM', 'SIGINT']) {
+  process.on(sig, () => {
+    log('SIGNAL', sig);
+    server.kill(sig);
+  });
+}
+
 // --- LSP message framing helpers ---
 
 function parseMessages(buffer) {
