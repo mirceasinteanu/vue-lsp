@@ -5,15 +5,13 @@
   "license": "MIT",
   "author": "Mircea Sinteanu",
   "scripts": {
-    "test": "node --test"
+    "test": "node --test test/"
   },
   "engines": {
     "node": ">=18"
   },
   "files": [
-    "vue-lsp-proxy.js",
-    "lsp-framing.js",
-    "proxy-handler.js",
+    "lib/",
     "vue-lsp-run.sh",
     ".lsp.json",
     ".claude-plugin/"

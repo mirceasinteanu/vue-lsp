@@ -1,6 +1,6 @@
 const { describe, it } = require('node:test');
 const assert = require('node:assert/strict');
-const { parseMessages, frameMessage } = require('./lsp-framing');
+const { parseMessages, frameMessage } = require('../lib/lsp-framing');
 
 // Helper: build an LSP-framed buffer from a string body
 function frame(body) {

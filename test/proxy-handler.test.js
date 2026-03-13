@@ -1,6 +1,6 @@
 const { describe, it } = require('node:test');
 const assert = require('node:assert/strict');
-const { handleServerMessage } = require('./proxy-handler');
+const { handleServerMessage } = require('../lib/proxy-handler');
 
 describe('handleServerMessage', () => {
   // --- Pass-through ---
