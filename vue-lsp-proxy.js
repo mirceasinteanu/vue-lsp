@@ -112,6 +112,7 @@ server.stdout.on('data', (chunk) => {
       process.stdout.write(frameMessage(result.forward));
     } else {
       log('DROPPED', raw);
+      process.stderr.write(`vue-lsp-proxy: dropped unrecognized tsserver/request shape\n`);
     }
   }
 });
