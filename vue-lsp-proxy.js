@@ -16,7 +16,9 @@ const LOG = process.env.VUE_LSP_DEBUG === '1';
 let logFile = null;
 if (LOG) {
   try {
-    logFile = require('fs').createWriteStream('/tmp/vue-lsp-proxy.log', { flags: 'a', mode: 0o600 });
+    const os = require('os');
+    const logPath = require('path').join(os.tmpdir(), 'vue-lsp-proxy.log');
+    logFile = require('fs').createWriteStream(logPath, { flags: 'a', mode: 0o600 });
   } catch (err) {
     process.stderr.write(`vue-lsp-proxy: could not open log file: ${err.message}\n`);
   }

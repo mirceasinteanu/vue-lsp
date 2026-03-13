@@ -67,7 +67,7 @@ Enable verbose proxy logs:
 VUE_LSP_DEBUG=1 claude --plugin-dir /path/to/vue-lsp
 ```
 
-Logs are written to `/tmp/vue-lsp-proxy.log`.
+Logs are written to `$TMPDIR/vue-lsp-proxy.log` (usually `/tmp` on Linux, `/var/folders/.../T/` on macOS).
 
 ## License
 
