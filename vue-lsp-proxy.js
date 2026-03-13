@@ -10,6 +10,7 @@
 
 const { spawn } = require('child_process');
 const { parseMessages, frameMessage } = require('./lsp-framing');
+const { handleServerMessage } = require('./proxy-handler');
 
 const LOG = process.env.VUE_LSP_DEBUG === '1';
 let logFile = null;
@@ -95,50 +96,17 @@ server.stdout.on('data', (chunk) => {
   serverBuffer = rest;
 
   for (const raw of messages) {
-    let msg;
-    try {
-      msg = JSON.parse(raw);
-    } catch {
-      // Not valid JSON — pass through as-is
-      log('SERVER->CLIENT (raw)', raw);
-      process.stdout.write(frameMessage(raw));
-      continue;
-    }
+    const result = handleServerMessage(raw);
 
-    // Intercept tsserver/request: Volar sends these as notifications with
-    // params: [[requestId, method, args]]. It expects a tsserver/response
-    // notification back with the same requestId.
-    if (msg.method === 'tsserver/request') {
+    if (result.action === 'intercept') {
       log('INTERCEPTED', raw);
-
-      // Send a tsserver/response back to unblock the server
-      if (Array.isArray(msg.params) && Array.isArray(msg.params[0])) {
-        const responses = msg.params
-          .filter(arr => Array.isArray(arr) && arr.length > 0)
-          .map(([requestId]) => [requestId, null]);
-        const response = JSON.stringify({
-          jsonrpc: '2.0',
-          method: 'tsserver/response',
-          params: responses,
-        });
-        log('PROXY->SERVER (tsserver/response)', response);
-        server.stdin.write(frameMessage(response));
-      } else if (msg.id !== undefined) {
-        // Fallback: if it has a JSON-RPC id, respond normally
-        const response = JSON.stringify({
-          jsonrpc: '2.0',
-          id: msg.id,
-          result: null,
-        });
-        log('PROXY->SERVER (jsonrpc response)', response);
-        server.stdin.write(frameMessage(response));
-      }
-      // Don't forward to Claude Code
-      continue;
+      log('PROXY->SERVER (response)', result.response);
+      server.stdin.write(frameMessage(result.response));
+    } else if (result.action === 'forward') {
+      log('SERVER->CLIENT', raw);
+      process.stdout.write(frameMessage(result.forward));
+    } else {
+      log('DROPPED', raw);
     }
-
-    // Pass everything else through
-    log('SERVER->CLIENT', raw);
-    process.stdout.write(frameMessage(raw));
   }
 });
