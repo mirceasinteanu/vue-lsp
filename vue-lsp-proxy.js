@@ -9,6 +9,7 @@
  */
 
 const { spawn } = require('child_process');
+const { parseMessages, frameMessage } = require('./lsp-framing');
 
 const LOG = process.env.VUE_LSP_DEBUG === '1';
 const logFile = LOG ? require('fs').createWriteStream('/tmp/vue-lsp-proxy.log', { flags: 'a', mode: 0o600 }) : null;
@@ -46,43 +47,8 @@ for (const sig of ['SIGTERM', 'SIGINT']) {
   });
 }
 
-// --- LSP message framing helpers ---
-
-function parseMessages(buffer) {
-  const messages = [];
-  let rest = buffer;
-
-  while (rest.length > 0) {
-    const headerEnd = rest.indexOf('\r\n\r\n');
-    if (headerEnd === -1) break;
-
-    const header = rest.slice(0, headerEnd).toString('ascii');
-    const match = header.match(/Content-Length:\s*(\d+)/i);
-    if (!match) {
-      // Malformed header — skip past it to avoid stalling the buffer
-      process.stderr.write(`vue-lsp-proxy: malformed LSP header, skipping: ${header.slice(0, 100)}\n`);
-      rest = rest.slice(headerEnd + 4);
-      continue;
-    }
-
-    const contentLength = parseInt(match[1], 10);
-    const bodyStart = headerEnd + 4;
-    if (rest.length < bodyStart + contentLength) break; // incomplete
-
-    const body = rest.slice(bodyStart, bodyStart + contentLength).toString('utf8');
-    messages.push(body);
-    rest = rest.slice(bodyStart + contentLength);
-  }
-
-  return { messages, rest };
-}
-
-function frameMessage(jsonStr) {
-  const buf = Buffer.from(jsonStr, 'utf8');
-  return Buffer.concat([
-    Buffer.from(`Content-Length: ${buf.length}\r\n\r\n`, 'ascii'),
-    buf,
-  ]);
+function onMalformedHeader(header) {
+  process.stderr.write(`vue-lsp-proxy: malformed LSP header, skipping: ${header.slice(0, 100)}\n`);
 }
 
 // --- Proxy: Claude Code stdin -> server stdin (pass-through) ---
@@ -91,7 +57,7 @@ let clientBuffer = Buffer.alloc(0);
 
 process.stdin.on('data', (chunk) => {
   clientBuffer = Buffer.concat([clientBuffer, chunk]);
-  const { messages, rest } = parseMessages(clientBuffer);
+  const { messages, rest } = parseMessages(clientBuffer, onMalformedHeader);
   clientBuffer = rest;
 
   for (const raw of messages) {
@@ -118,7 +84,7 @@ let serverBuffer = Buffer.alloc(0);
 
 server.stdout.on('data', (chunk) => {
   serverBuffer = Buffer.concat([serverBuffer, chunk]);
-  const { messages, rest } = parseMessages(serverBuffer);
+  const { messages, rest } = parseMessages(serverBuffer, onMalformedHeader);
   serverBuffer = rest;
 
   for (const raw of messages) {
