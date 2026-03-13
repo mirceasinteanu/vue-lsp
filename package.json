@@ -1,0 +1,16 @@
+{
+  "name": "vue-lsp",
+  "version": "1.0.0",
+  "description": "Claude Code plugin providing Vue language server (Volar) integration via a proxy",
+  "license": "MIT",
+  "author": "Mircea Sinteanu",
+  "engines": {
+    "node": ">=18"
+  },
+  "files": [
+    "vue-lsp-proxy.js",
+    "vue-lsp-run.sh",
+    ".lsp.json",
+    ".claude-plugin/"
+  ]
+}
