@@ -12,9 +12,16 @@ const { spawn } = require('child_process');
 const { parseMessages, frameMessage } = require('./lsp-framing');
 
 const LOG = process.env.VUE_LSP_DEBUG === '1';
-const logFile = LOG ? require('fs').createWriteStream('/tmp/vue-lsp-proxy.log', { flags: 'a', mode: 0o600 }) : null;
+let logFile = null;
+if (LOG) {
+  try {
+    logFile = require('fs').createWriteStream('/tmp/vue-lsp-proxy.log', { flags: 'a', mode: 0o600 });
+  } catch (err) {
+    process.stderr.write(`vue-lsp-proxy: could not open log file: ${err.message}\n`);
+  }
+}
 function log(direction, msg) {
-  if (!LOG) return;
+  if (!logFile) return;
   const preview = typeof msg === 'string' ? msg.slice(0, 200) : JSON.stringify(msg).slice(0, 200);
   logFile.write(`${new Date().toISOString()} [${direction}] ${preview}\n`);
 }
