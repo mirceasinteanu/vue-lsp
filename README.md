@@ -67,4 +67,4 @@ Logs are written to `/tmp/vue-lsp-proxy.log`.
 
 ## License
 
-Apache-2.0
+MIT

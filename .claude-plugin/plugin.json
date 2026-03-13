@@ -4,6 +4,6 @@
   "version": "1.0.0",
   "author": { "name": "mircea" },
   "category": "development",
-  "license": "Apache-2.0",
+  "license": "MIT",
   "keywords": ["vue", "volar", "lsp", "language-server"]
 }
