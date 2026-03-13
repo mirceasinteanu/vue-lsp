@@ -9,10 +9,10 @@ Volar sends `tsserver/request` notifications that Claude Code doesn't understand
 ## Prerequisites
 
 - **Node.js** (v18+)
-- **Vue Language Server** installed globally:
+- **Vue Language Server** (`@vue/language-server`) on your PATH. The simplest way is a global install:
 
 ```bash
-npm install -g @vue/language-server
+npm install -g @vue/language-server@^2
 ```
 
 Verify it's available:
@@ -20,6 +20,8 @@ Verify it's available:
 ```bash
 vue-language-server --version
 ```
+
+> **Note:** A global install is the standard pattern for LSP binaries (same as `metals`, `pyright`, etc.). Pin a major version to avoid surprises across projects.
 
 ## Installation
 
