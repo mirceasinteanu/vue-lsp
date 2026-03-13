@@ -104,6 +104,14 @@ process.stdin.on('end', () => {
   server.stdin.end();
 });
 
+process.stdin.on('error', (err) => {
+  log('STDIN_ERR', err.message);
+});
+
+server.stdin.on('error', (err) => {
+  log('SERVER_STDIN_ERR', err.message);
+});
+
 // --- Proxy: server stdout -> Claude Code stdout (filter tsserver/request) ---
 
 let serverBuffer = Buffer.alloc(0);
