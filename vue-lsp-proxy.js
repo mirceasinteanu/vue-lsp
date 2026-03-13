@@ -11,7 +11,7 @@
 const { spawn } = require('child_process');
 
 const LOG = process.env.VUE_LSP_DEBUG === '1';
-const logFile = LOG ? require('fs').createWriteStream('/tmp/vue-lsp-proxy.log', { flags: 'a' }) : null;
+const logFile = LOG ? require('fs').createWriteStream('/tmp/vue-lsp-proxy.log', { flags: 'a', mode: 0o600 }) : null;
 function log(direction, msg) {
   if (!LOG) return;
   const preview = typeof msg === 'string' ? msg.slice(0, 200) : JSON.stringify(msg).slice(0, 200);
