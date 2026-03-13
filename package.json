@@ -12,6 +12,7 @@
   },
   "files": [
     "vue-lsp-proxy.js",
+    "lsp-framing.js",
     "vue-lsp-run.sh",
     ".lsp.json",
     ".claude-plugin/"
