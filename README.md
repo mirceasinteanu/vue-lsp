@@ -4,7 +4,9 @@ A Claude Code plugin that provides [Volar](https://github.com/vuejs/language-too
 
 ## Why a proxy?
 
-Volar sends `tsserver/request` notifications that Claude Code doesn't understand, causing internal errors. This plugin includes a lightweight Node.js proxy (`vue-lsp-proxy.js`) that sits between Claude Code and Volar, intercepting those messages and responding with sensible defaults while passing everything else through transparently.
+Volar sends `tsserver/request` notifications that Claude Code doesn't understand, causing internal errors. This plugin includes a lightweight Node.js proxy (`vue-lsp-proxy.js`) that sits between Claude Code and Volar, intercepting those messages and responding with `null` defaults while passing everything else through transparently.
+
+**Trade-off:** Because `tsserver/request` calls are stubbed with `null`, TypeScript-powered features that depend on these requests (e.g., some advanced completions and refactorings) may return degraded results. Core features like go-to-definition, find-references, hover, document symbols, and diagnostics work fully.
 
 ## Prerequisites
 
