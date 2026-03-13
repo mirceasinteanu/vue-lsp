@@ -50,7 +50,12 @@ function parseMessages(buffer) {
 
     const header = rest.slice(0, headerEnd).toString('ascii');
     const match = header.match(/Content-Length:\s*(\d+)/i);
-    if (!match) break;
+    if (!match) {
+      // Malformed header — skip past it to avoid stalling the buffer
+      process.stderr.write(`vue-lsp-proxy: malformed LSP header, skipping: ${header.slice(0, 100)}\n`);
+      rest = rest.slice(headerEnd + 4);
+      continue;
+    }
 
     const contentLength = parseInt(match[1], 10);
     const bodyStart = headerEnd + 4;
